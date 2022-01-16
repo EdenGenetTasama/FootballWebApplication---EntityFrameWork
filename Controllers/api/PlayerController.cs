@@ -33,11 +33,11 @@ namespace FootballWebApplication.Controllers.api
         }
 
         // GET: api/Player/5
-        public async Task <IHttpActionResult> Get(int id)
+        public async Task<IHttpActionResult> Get(int id)
         {
             try
             {
-                Player playerById =await DBContext.Players.FindAsync(id);
+                Player playerById = await DBContext.Players.FindAsync(id);
                 return Ok(new { playerById });
             }
             catch (SqlException ex)
@@ -52,7 +52,7 @@ namespace FootballWebApplication.Controllers.api
         }
 
         // POST: api/Player
-        public async Task <IHttpActionResult> Post([FromBody] Player player)
+        public async Task<IHttpActionResult> Post([FromBody] Player player)
         {
             try
             {
@@ -72,22 +72,22 @@ namespace FootballWebApplication.Controllers.api
         }
 
         // PUT: api/Player/5
-        public async Task <IHttpActionResult> Put(int id, [FromBody] Player player)
+        public async Task<IHttpActionResult> Put(int id, [FromBody] Player player)
         {
             try
             {
-                Player playerThatFitId =  await DBContext.Players.FindAsync(id);
-                if(playerThatFitId != null)
+                Player playerThatFitId = await DBContext.Players.FindAsync(id);
+                if (playerThatFitId != null)
                 {
                     playerThatFitId.Name = player.Name;
                     playerThatFitId.LastName = player.LastName;
                     playerThatFitId.Posstion = player.Posstion;
                     playerThatFitId.Age = player.Age;
-                   await DBContext.SaveChangesAsync();
+                    await DBContext.SaveChangesAsync();
                     return Ok(playerThatFitId);
                 }
 
-                return Ok("Added");
+                return NotFound();
             }
             catch (SqlException ex)
             {
@@ -101,14 +101,19 @@ namespace FootballWebApplication.Controllers.api
         }
 
         // DELETE: api/Player/5
-        public async  Task <IHttpActionResult> Delete(int id)
+        public async Task<IHttpActionResult> Delete(int id)
         {
             try
             {
-                Player playerToDelete =await DBContext.Players.FindAsync(id);
-                DBContext.Players.Remove(playerToDelete);
-                await DBContext.SaveChangesAsync();
-                return Ok("DELETED");
+                Player playerToDelete = await DBContext.Players.FindAsync(id);
+                if (playerToDelete != null)
+                {
+                    DBContext.Players.Remove(playerToDelete);
+                    await DBContext.SaveChangesAsync();
+                    return Ok("DELETED");
+                }
+                return NotFound();
+
             }
             catch (SqlException ex)
             {
